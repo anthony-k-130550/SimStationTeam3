@@ -2,16 +2,16 @@ package simstation;
 
 import mvc.*;
 
-public class WorldFactory implements AppFactory
+public abstract class WorldFactory implements AppFactory
 {
     @Override
-    public Model makeModel() { return new World(); }
+    public abstract Model makeModel();
 
     @Override
     public View makeView(Model model) { return new WorldView(model); }
 
     @Override
-    public String[] getEditCommands() { return new String[] {"", "decTemp"}; }
+    public String[] getEditCommands() { return new String[] {"Start", "Pause", "Resume", "Stop", "Stats"}; }
 
     @Override
     public Command makeEditCommand(Model model, String type, Object source)

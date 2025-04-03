@@ -18,7 +18,10 @@ public class WorldView extends View
 
     public void paintComponent(Graphics gc)
     {
-        Iterator<Agent> iter = this.model.getWorldAgents().iterator();
+        super.paintComponent(gc);
+        World w = (World)this.model;
+        Iterator<Agent> iter = w.getWorldAgents().iterator();
+
 
         while (iter.hasNext()) // loops through the list
         {
@@ -29,8 +32,10 @@ public class WorldView extends View
     public void drawAgent(Agent a, Graphics gc)
     {
         Color oldColor = gc.getColor();
+
         gc.setColor(Color.RED);
-        gc.drawOval(a.getX(), a.getY(), DIAM, DIAM);
+        gc.fillOval(a.getX(), a.getY(), DIAM, DIAM);
+
         gc.setColor(oldColor);
     }
 }

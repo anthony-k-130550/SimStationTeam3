@@ -31,29 +31,37 @@ public abstract class Agent implements Runnable, Serializable {
         stopped = true;
     }
 
-    public void pause() {
+    public synchronized void pause() {
         paused = true;
+        notify();
     }
 
-    public void resume() {
+    public synchronized void resume() {
         paused = false;
+        notify();
     }
 
     public abstract void update();
 
     public void run() {
-        while (!paused && !stopped) {
+        while (!stopped) {
+            synchronized (this) {
+                while (paused) { //I'm using synchronization here because I'm waiting for the paused condition to change
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+
+                    }
+                }
+            }
+
             update();
             try {
-                Thread.sleep(20); // be cooperative
-            } catch (Exception e) {
-                System.out.println(e);
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+
             }
         }
-    }
-
-    public void join() throws InterruptedException {
-        if (myThread != null) {myThread.join();}
     }
 
     //getters

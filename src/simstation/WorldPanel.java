@@ -65,10 +65,4 @@ public class WorldPanel extends AppPanel
         World w = (World)m;
         w.startAgents();
     }
-
-    public static void main(String[] args)
-    {
-        AppPanel p = new WorldPanel(new WorldFactory());
-        p.display();
-    }
 }

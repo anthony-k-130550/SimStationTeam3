@@ -10,7 +10,6 @@ public abstract class MobileAgent extends Agent {
     public void update() {
         Heading newHeading = Heading.random();
         this.move(15);
-        world.changed();
     }
     public void turn(Heading dir) {
         heading = dir;
@@ -49,6 +48,6 @@ public abstract class MobileAgent extends Agent {
                 }
                 break;
         }
-        System.out.println(this.getAgentName() + " moved " + "( " + this.getX() + ", " + this.getY() + ")");
+        world.changed();
     }
 }

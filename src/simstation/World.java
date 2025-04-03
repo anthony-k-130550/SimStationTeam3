@@ -2,6 +2,7 @@ package simstation;
 
 import mvc.*;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
@@ -25,22 +26,18 @@ public abstract class World extends Model {
     }
 
     public void startAgents() { //calls start() for each agent in its list of agents
+        populate();
         for (Agent agent : worldAgents) {
             agent.start();
         }
         observer.start();
-        for (Agent agent : worldAgents) { //join just in case we need to do something with that later, but as far as I know this isn't necessary for now
-            try {
-                agent.join();
-            } catch (InterruptedException ie) {
-            }
-        }
     }
 
     public void stopAgents() { //calls stop() for each
         for (Agent agent : worldAgents) {
             agent.stop();
         }
+        observer.update(); //make sure the stats are updated before stopping the observer
         observer.stop();
     }
 
@@ -48,6 +45,7 @@ public abstract class World extends Model {
         for (Agent agent : worldAgents) {
             agent.pause();
         }
+        observer.update(); //make sure the stats are updated before pausing the observer as well
         observer.pause();
     }
 
@@ -61,7 +59,7 @@ public abstract class World extends Model {
     public abstract void populate();
 
     public String getStatus() {
-        return ""; //not sure what goes here yet, what do you guys think?
+        return "Clock: " + this.clock + ", Alive: " + this.alive + ", Agents: " + this.numAgents;
     }
 
     public void updateStatistics() {
@@ -74,6 +72,10 @@ public abstract class World extends Model {
         }
         this.alive = temp;
         this.clock++;
+    }
+
+    public List<Agent> getWorldAgents() {
+        return Collections.unmodifiableList(worldAgents);
     }
 
     public Agent getNeighbor(Agent caller, int radius) {
