@@ -37,11 +37,14 @@ public class AppPanel extends JPanel implements Subscriber, ActionListener  {
         cp.add(this);
         frame.setJMenuBar(createMenuBar());
         frame.setTitle(factory.getTitle());
-        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT)); //this allows the AppPanel to be perfectly 1000 by 500 instead of a few pixels short
     }
 
 
-    public void display() { frame.setVisible(true);}
+    public void display() {
+        frame.setVisible(true);
+        frame.pack();
+    }
 
     public void update() {  /* override in extensions if needed */ }
 
