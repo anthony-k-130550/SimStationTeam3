@@ -18,6 +18,7 @@ public abstract class World extends Model {
     public World() {
         observer = new ObserverAgent();
         observer.setWorld(this);
+        populate();
     }
 
     public void addAgent(Agent agent) {
@@ -26,7 +27,6 @@ public abstract class World extends Model {
     }
 
     public void startAgents() { //calls start() for each agent in its list of agents
-        populate();
         for (Agent agent : worldAgents) {
             agent.start();
         }

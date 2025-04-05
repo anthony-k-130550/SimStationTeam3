@@ -7,8 +7,8 @@ import java.util.Random;
 import mvc.Utilities;
 
 public abstract class Agent implements Runnable, Serializable {
-    private int xc;
-    private int yc;
+    protected int xc;
+    protected int yc;
     private boolean paused = false;
     private boolean stopped = false;
     private String agentName;
