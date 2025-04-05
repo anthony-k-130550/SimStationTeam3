@@ -9,11 +9,11 @@ import java.util.LinkedList;
 
 public abstract class World extends Model {
     public static int SIZE = 500;
-    private int clock = 0;
-    private int alive = 0;
-    private int numAgents = 0;
-    List<Agent> worldAgents = new LinkedList<Agent>();
-    ObserverAgent observer;
+    protected int clock = 0;
+    protected int alive = 0;
+    protected int numAgents = 0;
+    protected List<Agent> worldAgents = new LinkedList<Agent>();
+    protected ObserverAgent observer;
 
     public World() {
         observer = new ObserverAgent();
@@ -64,13 +64,12 @@ public abstract class World extends Model {
 
     public void updateStatistics() {
         this.numAgents = worldAgents.size();
-        int temp = 0;
+        this.alive = 0;
         for (Agent agent : worldAgents) {
             if (!agent.getStopped() && !agent.getPaused()) {
-                temp++;
+                this.alive++;
             }
         }
-        this.alive = temp;
         this.clock++;
     }
 

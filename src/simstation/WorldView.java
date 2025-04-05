@@ -1,9 +1,7 @@
 package simstation;
 
 import mvc.*;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.util.*;
 
 public class WorldView extends View
@@ -13,7 +11,6 @@ public class WorldView extends View
     public WorldView(Model model)
     {
         super(model);
-        // TODO
     }
 
     public void paintComponent(Graphics gc)
@@ -22,11 +19,8 @@ public class WorldView extends View
         World w = (World)this.model;
         Iterator<Agent> iter = w.getWorldAgents().iterator();
 
-
-        while (iter.hasNext()) // loops through the list
-        {
-            this.drawAgent(iter.next(), gc);
-        }
+        // loops through the list
+        while (iter.hasNext()) { this.drawAgent(iter.next(), gc); }
     }
 
     public void drawAgent(Agent a, Graphics gc)

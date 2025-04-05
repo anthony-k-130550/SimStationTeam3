@@ -3,7 +3,6 @@ package simstation;
 import mvc.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 
 public class WorldPanel extends AppPanel
 {
@@ -65,6 +64,4 @@ public class WorldPanel extends AppPanel
         World w = (World)m;
         w.startAgents();
     }
-
-
 }

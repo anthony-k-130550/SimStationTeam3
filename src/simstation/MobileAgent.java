@@ -1,14 +1,14 @@
 package simstation;
 
 public abstract class MobileAgent extends Agent {
-    Heading heading;
+    protected Heading heading;
 
     public MobileAgent() {
         super();
     }
 
     public void update() {
-        Heading newHeading = Heading.random();
+        heading = Heading.random();
         this.move(15);
     }
     public void turn(Heading dir) {
