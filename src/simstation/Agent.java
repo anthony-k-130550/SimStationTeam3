@@ -24,6 +24,16 @@ public abstract class Agent implements Runnable, Serializable {
         agentName = new String ("Agent-("+xc+", "+yc+")");
     }
 
+    public Agent(World world) {
+        myThread = new Thread(this);
+        this.world = world;
+
+        //random x,y, and names
+        this.xc = Utilities.rng.nextInt(World.SIZE) + 1;
+        this.yc = Utilities.rng.nextInt(World.SIZE) + 1;
+        agentName = new String ("Agent-("+xc+", "+yc+")");
+    }
+
     public void start() {
         myThread.start();
     }
