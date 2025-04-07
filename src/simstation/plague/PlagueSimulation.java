@@ -55,6 +55,10 @@ class Host extends MobileAgent
 
     public int getTimeBeforeCured() { return timeBeforeCured; }
 
+    public boolean getShouldDie() { return shouldDie; }
+
+    public void setShouldDie(boolean shouldDie) { this.shouldDie = shouldDie; }
+
     public void setTimeBeforeCured(int timeBeforeCured) { this.timeBeforeCured = timeBeforeCured; }
 
     @Override
@@ -300,7 +304,21 @@ public class PlagueSimulation extends World
 
     public boolean isFatal() { return isFatal; }
 
-    public void setFatal(boolean isFatal) { this.isFatal = isFatal; changed(); }
+    public void setFatal(boolean isFatal)
+    {
+        this.isFatal = isFatal;
+        for (Agent a : this.worldAgents) // loops through all the agents
+        {
+            if (this.isFatal && ((Host)a).infected()) // true if an infected agent should be dead after recovery
+            {
+                ((Host)a).setShouldDie(true);
+            }
+            else
+            {
+                ((Host)a).setShouldDie(false);
+            }
+        }
+    }
 
     public void populate()
     {
