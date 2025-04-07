@@ -5,7 +5,7 @@ import simstation.*;
 public class Meadow extends World {
     private int waitPenalty = 5;
     private int moveEnergy = 10;
-    private int numCows = 1;
+    private int numCows = 500;
     private int dim = SIZE/(Patch.patchSize);
     Patch[][] patches = new Patch[dim][dim];
 
@@ -32,10 +32,17 @@ public class Meadow extends World {
             temp.setPatch(this.getPatch(temp.getX(), temp.getY()));
             addAgent(temp);
         }
+
         changed();
     }
 
     public Patch getPatch(int xc, int yc) {
+        if (xc >= SIZE) {
+            xc = xc % SIZE;
+        }
+        if (yc >= SIZE) { //avoid out of bounds error when 500/10 = 50, even tho there is no index 50
+            yc = yc % SIZE;
+        }
         int i = xc/Patch.patchSize;
         int j = yc/Patch.patchSize;
         return patches[i][j];
