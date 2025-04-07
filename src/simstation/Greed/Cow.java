@@ -6,45 +6,34 @@ public class Cow extends MobileAgent {
     public static int greediness = 25;
     private Patch patch;
 
-    public synchronized void update() throws IllegalArgumentException {
-        if (!(world instanceof Meadow)) {
-            throw new IllegalArgumentException("World must be instance of Meadow");
-        }
-        Meadow m = (Meadow) world;
+        public synchronized void update() throws IllegalArgumentException {
+            if (!(world instanceof Meadow)) {
+                throw new IllegalArgumentException("World must be instance of Meadow");
+            }
+            Meadow m = (Meadow) this.world;
 
-        if (this.energy <= 0) {
-            this.stop();
-            this.world.changed();
-        }
-
-        while (patch.getEnergy() < greediness) { //not enough grass for the cow
-            if (this.energy > m.getMoveEnergy()) { //move if cow can't
-                heading = Heading.random();
-                this.move(Patch.patchSize);
-                this.energy -= m.getMoveEnergy();
-                this.patch = m.getPatch(this.xc, this.yc);
-            } else { //wait if cow can't
-                try {
+            while (patch.getEnergy() < greediness) { //not enough grass for the cow
+                if (this.energy > m.getMoveEnergy()) { //move if cow can (has energy)
+                    heading = Heading.random();
+                    this.move(Patch.patchSize);
+                    this.energy -= m.getMoveEnergy();
+                    this.patch = m.getPatch(this.xc, this.yc);
+                    notify();
+                    this.world.changed();
+                } else { //wait if cow can't
                     this.energy -= m.getWaitPenalty();
-                    wait();
-                } catch (InterruptedException e) {
-
+                    this.world.changed();
+                    if (this.getEnergy() <= 0) {
+                        this.stop();
+                        return;
+                    }
                 }
             }
+
+            this.patch.eatMe(this, Cow.greediness);
+            notify();
+            this.world.changed();
         }
-
-        this.patch.eatMe(this, Cow.greediness);
-        System.out.println("This energy: " + this.energy);
-        System.out.println("Patch: " + this.patch.getEnergy());
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException e) {
-
-        }
-
-        notify();
-        this.world.changed();
-    }
 
     public synchronized int getEnergy() {
         return energy;

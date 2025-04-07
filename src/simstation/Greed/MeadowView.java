@@ -7,9 +7,10 @@ import java.util.Iterator;
 
 public class MeadowView extends WorldView {
     Color darkGreen = new Color(0,50, 0);
-    Color halfFullGreen = new Color(0,100,0);
-    Color halfEmptyGreen = new Color(0,160,0);
-    Color lightGreen = new Color(0,250,0);
+    Color halfFullGreen = new Color(50, 60,20);
+    Color halfEmptyGreen = new Color(25,140,0);
+    Color lightGreen = new Color(0,255,0);
+    Color emptyGreen = new Color(15, 255, 100);
     protected static int DIAM = 5;
 
     public MeadowView(Model model)
@@ -33,7 +34,9 @@ public class MeadowView extends WorldView {
         else if (a instanceof Patch) {
             Patch p = (Patch) a;
             int energyLevel = p.getEnergy();
-            if (energyLevel >= 0 && energyLevel <= 25) {
+            if (energyLevel == 0) {
+                gc.setColor(emptyGreen);
+            } else if (energyLevel > 0 && energyLevel <= 25) {
                 gc.setColor(lightGreen);
             } else if (energyLevel > 25 && energyLevel <= 50) {
                 gc.setColor(halfEmptyGreen);
