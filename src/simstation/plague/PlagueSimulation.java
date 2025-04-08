@@ -274,7 +274,7 @@ class PlagueView extends WorldView
         else this.setBackground(Color.GRAY);
 
         World w = (World)this.model;
-        Iterator<Agent> iter = w.getWorldAgents().iterator();
+        Iterator<Agent> iter = w.getAgents().iterator();
 
         // loops through the list
         while (iter.hasNext()) { this.drawAgent((Host)iter.next(), gc); }
@@ -328,7 +328,7 @@ public class PlagueSimulation extends World
     public void setFatal(boolean isFatal)
     {
         this.isFatal = isFatal;
-        for (Agent a : this.worldAgents) // loops through all the agents
+        for (Agent a : this.agents) // loops through all the agents
         {
             if (this.isFatal && ((Host)a).infected()) // true if an infected agent should be dead after recovery
             {
@@ -344,9 +344,9 @@ public class PlagueSimulation extends World
     @Override
     public void startAgents()
     {
-        this.worldAgents.clear();
+        this.agents.clear();
         populate();
-        for (Agent agent : worldAgents) { agent.start(); }
+        for (Agent agent : agents) { agent.start(); }
         observer.start();
     }
 
@@ -369,7 +369,7 @@ public class PlagueSimulation extends World
 
         int numOfInfectedAgents = 0;
         this.numAgents = 0;
-        for (Agent agent : worldAgents) // loops through the agents
+        for (Agent agent : agents) // loops through the agents
         {
             if (((Host)agent).infected()) { numOfInfectedAgents++; }
             if (((Host)agent).getColor() != Color.BLACK) { numAgents++; }
