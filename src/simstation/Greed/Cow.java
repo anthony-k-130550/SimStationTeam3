@@ -23,11 +23,11 @@ public class Cow extends MobileAgent {
                 } else { //wait if cow can't
                     this.energy -= m.getWaitPenalty();
                     this.world.changed();
-                }
-                if (this.getEnergy() <= 0) { //check for death
-                    notify();
-                    this.world.changed();
-                    this.stop();
+                    if (this.getEnergy() <= 0) { //check for death
+                        notify();
+                        this.world.changed();
+                        this.stop();
+                    }
                 }
             } else {
                 this.patch.eatMe(this, Cow.greediness);

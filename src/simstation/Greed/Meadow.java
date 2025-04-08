@@ -7,6 +7,7 @@ public class Meadow extends World {
     private int moveEnergy = 10;
     private int numCows = 50;
     private int dim = SIZE/(Patch.patchSize);
+    private int numPatches = dim * dim;
     Patch[][] patches = new Patch[dim][dim];
 
     public Meadow() {
@@ -35,6 +36,7 @@ public class Meadow extends World {
             addAgent(temp);
         }
 
+        this.alive = numCows;
         changed();
     }
 
@@ -65,5 +67,24 @@ public class Meadow extends World {
     public static void main(String[] args) {
         AppPanel panel = new GreedSimulationPanel(new GreedFactory());
         panel.display();
+    }
+
+    public void updateStatistics() {
+        this.numAgents = agents.size();
+        int tempAlive = 0;
+        for (Agent agent: agents) {
+            if (agent instanceof Cow) {
+                Cow temp = (Cow) agent;
+                if (temp.getEnergy() > 0) {
+                    tempAlive++;
+                }
+            }
+        }
+        this.alive = tempAlive;
+        this.clock++;
+    }
+
+    public String getStatus() {
+        return "Clock: " + this.clock + ", Alive: " + this.alive + ", Cows: " + this.numCows +  ", Patches: " + this.numPatches;
     }
 }

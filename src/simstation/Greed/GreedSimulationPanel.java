@@ -44,7 +44,7 @@ public class GreedSimulationPanel extends WorldPanel implements ChangeListener {
         greed.addChangeListener(this);
         sliders.add(greed);
 
-        JLabel growBackText = new JLabel("GrowBack Rate: ");
+        JLabel growBackText = new JLabel("Grow Back Rate: ");
         growBackText.setOpaque(false);
         growBackText.setHorizontalAlignment(JLabel.CENTER);
         sliders.add(growBackText);
