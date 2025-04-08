@@ -16,6 +16,7 @@ public abstract class World extends Model {
     protected ObserverAgent observer;
 
     public World() {
+        super();
         observer = new ObserverAgent();
         observer.setWorld(this);
         populate();

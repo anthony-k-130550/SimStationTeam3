@@ -7,6 +7,10 @@ public abstract class MobileAgent extends Agent {
         super();
     }
 
+    public MobileAgent(World world) {
+        super(world);
+    }
+
     public void update() {
         heading = Heading.random();
         this.move(15);
