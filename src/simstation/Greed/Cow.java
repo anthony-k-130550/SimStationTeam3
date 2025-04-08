@@ -12,9 +12,9 @@ public class Cow extends MobileAgent {
             }
             Meadow m = (Meadow) this.world;
 
-            while (patch.getEnergy() < greediness) { //not enough grass for the cow
+            if (patch.getEnergy() < this.greediness) { //not enough grass for the cow
                 if (this.energy > m.getMoveEnergy()) { //move if cow can (has energy)
-                    heading = Heading.random();
+                    this.heading = Heading.random();
                     this.move(Patch.patchSize);
                     this.energy -= m.getMoveEnergy();
                     this.patch = m.getPatch(this.xc, this.yc);
@@ -23,16 +23,17 @@ public class Cow extends MobileAgent {
                 } else { //wait if cow can't
                     this.energy -= m.getWaitPenalty();
                     this.world.changed();
-                    if (this.getEnergy() <= 0) {
-                        this.stop();
-                        return;
-                    }
                 }
+                if (this.getEnergy() <= 0) { //check for death
+                    notify();
+                    this.world.changed();
+                    this.stop();
+                }
+            } else {
+                this.patch.eatMe(this, Cow.greediness);
+                notify();
+                this.world.changed();
             }
-
-            this.patch.eatMe(this, Cow.greediness);
-            notify();
-            this.world.changed();
         }
 
     public synchronized int getEnergy() {

@@ -3,7 +3,7 @@ import simstation.*;
 
 public class Patch extends Agent {
     protected int energy = 100;
-    public static int growBackRate = 2;
+    public static int growBackRate = 1;
     public static int patchSize = 10; //i might have to change this to non-static according to UML
 
     public synchronized void update() {

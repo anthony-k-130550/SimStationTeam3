@@ -12,7 +12,7 @@ public abstract class World extends Model {
     protected int clock = 0;
     protected int alive = 0;
     protected int numAgents = 0;
-    protected List<Agent> worldAgents = new LinkedList<Agent>();
+    protected List<Agent> agents = new LinkedList<Agent>();
     protected ObserverAgent observer;
 
     public World() {
@@ -22,19 +22,19 @@ public abstract class World extends Model {
     }
 
     public void addAgent(Agent agent) {
-        worldAgents.add(agent);
+        agents.add(agent);
         agent.setWorld(this);
     }
 
     public void startAgents() { //calls start() for each agent in its list of agents
-        for (Agent agent : worldAgents) {
+        for (Agent agent : agents) {
             agent.start();
         }
         observer.start();
     }
 
     public void stopAgents() { //calls stop() for each
-        for (Agent agent : worldAgents) {
+        for (Agent agent : agents) {
             agent.stop();
         }
         observer.update(); //make sure the stats are updated before stopping the observer
@@ -42,7 +42,7 @@ public abstract class World extends Model {
     }
 
     public void pauseAgents() { //calls pause() for each
-        for (Agent agent : worldAgents) {
+        for (Agent agent : agents) {
             agent.pause();
         }
         observer.update(); //make sure the stats are updated before pausing the observer as well
@@ -50,7 +50,7 @@ public abstract class World extends Model {
     }
 
     public void resumeAgents() { //calls resume() for each
-        for (Agent agent : worldAgents) {
+        for (Agent agent : agents) {
             agent.resume();
         }
         observer.resume();
@@ -63,18 +63,13 @@ public abstract class World extends Model {
     }
 
     public void updateStatistics() {
-        this.numAgents = worldAgents.size();
-        this.alive = 0;
-        for (Agent agent : worldAgents) {
-            if (!agent.getStopped() && !agent.getPaused()) {
-                this.alive++;
-            }
-        }
+        this.numAgents = agents.size();
+        this.alive = agents.size(); //default implementation
         this.clock++;
     }
 
-    public List<Agent> getWorldAgents() {
-        return Collections.unmodifiableList(worldAgents);
+    public List<Agent> getAgents() {
+        return Collections.unmodifiableList(agents);
     }
 
     public Agent getNeighbor(Agent caller, int radius) {
@@ -120,8 +115,8 @@ public abstract class World extends Model {
             bottomBorder = caller.getY() + radius;
         }
 
-        int randomIndex = Utilities.rng.nextInt(worldAgents.size() + 1);
-        Iterator<Agent> it = worldAgents.iterator();
+        int randomIndex = Utilities.rng.nextInt(agents.size() + 1);
+        Iterator<Agent> it = agents.iterator();
 
         //effectively chooses a random Agent from the batch to start
         for (int i = 0; i < randomIndex; i++) {
@@ -130,11 +125,11 @@ public abstract class World extends Model {
 
         Agent neighbor = null;
         Agent temp = null;
-        for (int i = 0; i < worldAgents.size(); i++) {
+        for (int i = 0; i < agents.size(); i++) {
             if (it.hasNext()) {
                 temp = it.next();
             } else {
-                it = worldAgents.iterator();
+                it = agents.iterator();
                 temp = it.next();
             }
             //check to see if temp fits within x borders

@@ -17,7 +17,7 @@ public class WorldView extends View
     {
         super.paintComponent(gc);
         World w = (World)this.model;
-        Iterator<Agent> iter = w.getWorldAgents().iterator();
+        Iterator<Agent> iter = w.getAgents().iterator();
 
         // loops through the list
         while (iter.hasNext()) { this.drawAgent(iter.next(), gc); }

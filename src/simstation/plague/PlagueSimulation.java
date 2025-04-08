@@ -168,7 +168,7 @@ class PlagueView extends WorldView
     {
         super.paintComponent(gc);
         World w = (World)this.model;
-        Iterator<Agent> iter = w.getWorldAgents().iterator();
+        Iterator<Agent> iter = w.getAgents().iterator();
 
         // loops through the list
         while (iter.hasNext()) { this.drawAgent((Host)iter.next(), gc); }
@@ -221,7 +221,7 @@ public class PlagueSimulation extends World
         super.updateStatistics();
 
         int numOfInfectedAgents = 0;
-        for (Agent agent : worldAgents)
+        for (Agent agent : agents)
         {
             if (((Host)agent).infected())
             {
