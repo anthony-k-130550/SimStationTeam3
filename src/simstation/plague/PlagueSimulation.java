@@ -6,6 +6,7 @@ import simstation.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.Iterator;
 
 class Host extends MobileAgent
@@ -105,10 +106,7 @@ class Host extends MobileAgent
 
 class FatalCommand extends Command
 {
-    public FatalCommand(Model model)
-    {
-        super(model);
-    }
+    public FatalCommand(Model model) { super(model); }
 
     public void execute()
     {
@@ -135,18 +133,19 @@ class PlaguePanel extends WorldPanel
     {
         super(factory);
 
-        //this.controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.PAGE_AXIS)); // doesn't really work
-        this.controlPanel.setLayout(new GridLayout(10, 1)); // technically works
-        //this.controlPanel.setLayout(new GridLayout(10, 5)); // technically works
+        this.controlPanel.setLayout(new GridLayout(10, 1));
 
         // initialInfectionPercentageLabel
         initialInfectionPercentageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         initialInfectionPercentageLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         // initialInfectionPercentageSlider
-        JPanel initialInfectionPercentagePanel = new JPanel();
+        JPanel initialInfectionPercentagePanel = new JPanel(new BorderLayout());
         initialInfectionPercentagePanel.setOpaque(false);
         initialInfectionPercentageSlider.setMajorTickSpacing(10);
+        initialInfectionPercentageSlider.setPaintTicks(true);
+        initialInfectionPercentageSlider.setPaintLabels(true);
+        initialInfectionPercentageSlider.setMinorTickSpacing(5);
         initialInfectionPercentageSlider.addChangeListener(new ChangeListener()
         {
             @Override
@@ -162,9 +161,12 @@ class PlaguePanel extends WorldPanel
         infectionProbabilityLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         // infectionProbabilitySlider
-        JPanel infectionProbabilityPanel = new JPanel();
+        JPanel infectionProbabilityPanel = new JPanel(new BorderLayout());
         infectionProbabilityPanel.setOpaque(false);
         infectionProbabilitySlider.setMajorTickSpacing(10);
+        infectionProbabilitySlider.setPaintTicks(true);
+        infectionProbabilitySlider.setPaintLabels(true);
+        infectionProbabilitySlider.setMinorTickSpacing(5);
         infectionProbabilitySlider.addChangeListener(new ChangeListener()
         {
             @Override
@@ -180,9 +182,12 @@ class PlaguePanel extends WorldPanel
         initialPopulationSizeLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         // initialPopulationSizeSlider
-        JPanel initialPopulationSizePanel = new JPanel();
+        JPanel initialPopulationSizePanel = new JPanel(new BorderLayout());
         initialPopulationSizePanel.setOpaque(false);
-        initialPopulationSizeSlider.setMajorTickSpacing(10);
+        initialPopulationSizeSlider.setMajorTickSpacing(20);
+        initialPopulationSizeSlider.setPaintTicks(true);
+        initialPopulationSizeSlider.setPaintLabels(true);
+        initialPopulationSizeSlider.setMinorTickSpacing(5);
         initialPopulationSizeSlider.addChangeListener(new ChangeListener()
         {
             @Override
@@ -198,9 +203,12 @@ class PlaguePanel extends WorldPanel
         recoveryTimeLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         // recoveryTimeSlider
-        JPanel recoveryTimePanel = new JPanel();
+        JPanel recoveryTimePanel = new JPanel(new BorderLayout());
         recoveryTimePanel.setOpaque(false);
-        recoveryTimeSlider.setMajorTickSpacing(10);
+        recoveryTimeSlider.setMajorTickSpacing(50);
+        recoveryTimeSlider.setPaintTicks(true);
+        recoveryTimeSlider.setPaintLabels(true);
+        recoveryTimeSlider.setMinorTickSpacing(10);
         recoveryTimeSlider.addChangeListener(new ChangeListener()
         {
             @Override
@@ -237,14 +245,26 @@ class PlaguePanel extends WorldPanel
         // adds not fatal button
         this.controlPanel.add(fatalityPanel);
     }
+
+    @Override
+    public void actionPerformed(ActionEvent ae)
+    {
+        super.actionPerformed(ae);
+        this.update();
+        this.view.repaint();
+    }
+
+    @Override
+    public void update()
+    {
+        if (((PlagueSimulation)this.model).isFatal()) fatalityButton.setText("Fatal");
+        else fatalityButton.setText("Not Fatal");
+    }
 }
 
 class PlagueView extends WorldView
 {
-    public PlagueView(Model model)
-    {
-        super(model);
-    }
+    public PlagueView(Model model) { super(model); }
 
     public void paintComponent(Graphics gc)
     {
@@ -282,7 +302,8 @@ class PlagueFactory extends WorldFactory implements AppFactory
     {
         Command originalCommand = super.makeEditCommand(model, type, source);
         if (originalCommand != null) return originalCommand;
-        if (type.equalsIgnoreCase("Not Fatal")) return new FatalCommand(model);
+        if (type.equalsIgnoreCase("Fatal") || type.equalsIgnoreCase("Not Fatal"))
+            return new FatalCommand(model);
         return null;
     }
 
@@ -320,6 +341,16 @@ public class PlagueSimulation extends World
         }
     }
 
+    @Override
+    public void startAgents()
+    {
+        this.worldAgents.clear();
+        populate();
+        for (Agent agent : worldAgents) { agent.start(); }
+        observer.start();
+    }
+
+    @Override
     public void populate()
     {
         int infectedPopulationSize = (POPULATION_SIZE * INITIAL_INFECTION_PERCENTAGE) / 100;
@@ -327,6 +358,8 @@ public class PlagueSimulation extends World
         for (int i = 0; i < infectedPopulationSize; i++) { addAgent(new Host(this, true)); }
 
         for (int i = infectedPopulationSize; i < POPULATION_SIZE; i++) { addAgent(new Host(this, false)); }
+
+        this.updateStatistics();
     }
 
     @Override
@@ -335,19 +368,20 @@ public class PlagueSimulation extends World
         super.updateStatistics();
 
         int numOfInfectedAgents = 0;
-
+        this.numAgents = 0;
         for (Agent agent : worldAgents) // loops through the agents
         {
             if (((Host)agent).infected()) { numOfInfectedAgents++; }
+            if (((Host)agent).getColor() != Color.BLACK) { numAgents++; }
         }
-
         CURRENT_INFECTED_PERCENTAGE = (numOfInfectedAgents * 100) / POPULATION_SIZE;
     }
 
     @Override
     public String getStatus()
     {
-        return "# of Agents = " + POPULATION_SIZE
+        return "Original Population = " + POPULATION_SIZE
+                + "\n# of Living Hosts = " + numAgents
                 + "\nClock: " + this.clock
                 + "\n% Infected: " + CURRENT_INFECTED_PERCENTAGE;
     }
