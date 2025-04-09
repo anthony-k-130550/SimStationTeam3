@@ -94,6 +94,9 @@ public abstract class Agent implements Runnable, Serializable {
     public Thread getMyThread() {
         return myThread;
     }
+    public void setMyThread(Thread t) {
+        myThread = t;
+    }
     public boolean getPaused() {
         return paused;
     }

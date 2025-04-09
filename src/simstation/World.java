@@ -161,4 +161,17 @@ public abstract class World extends Model {
         }
         return null;
     }
+
+    public boolean hasStarted() { //functionality for save and saveAs
+        Agent temp = agents.get(0); //get any agent, they are all uniform in terms of starting
+        Thread tempThread = temp.getMyThread();
+
+        return (tempThread.getState() != Thread.State.NEW); //returns true if started, false if hasn't
+    }
+
+    public void rethread() { //recreate the threads that are lost when saving a model
+        for (Agent agent: agents) {
+            agent.setMyThread(new Thread(agent));
+        }
+    }
 }
