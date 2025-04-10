@@ -104,6 +104,8 @@ class Host extends MobileAgent
     }
 }
 
+//================================================================
+
 class FatalCommand extends Command
 {
     public FatalCommand(Model model) { super(model); }
@@ -115,12 +117,81 @@ class FatalCommand extends Command
     }
 }
 
-class PlaguePanel extends WorldPanel
+//================================================================
+
+class SetInitialInfectionPercentageCommand extends Command
 {
-    private JLabel initialInfectionPercentageLabel = new JLabel("Initial % Infected:");
-    private JLabel infectionProbabilityLabel = new JLabel("Infection Probability:");
-    private JLabel initialPopulationSizeLabel = new JLabel("Initial Population Size:");
-    private JLabel recoveryTimeLabel = new JLabel("Fatality/Recovery Time:");
+    Integer initialInfectionPercentageValue = null;
+
+    public SetInitialInfectionPercentageCommand(Model model) { super(model); }
+
+    public void execute() throws Exception
+    {
+        if (initialInfectionPercentageValue == null)
+        {
+            String response = Utilities.ask("Initial % Infected = ?");
+            initialInfectionPercentageValue = Integer.valueOf(response);
+        }
+        PlagueSimulation.INITIAL_INFECTION_PERCENTAGE = initialInfectionPercentageValue;
+    }
+}
+
+class SetInfectionProbabilityCommand extends Command
+{
+    Integer infectionProbabilityValue = null;
+
+    public SetInfectionProbabilityCommand(Model model) { super(model); }
+
+    public void execute() throws Exception
+    {
+        if (infectionProbabilityValue == null)
+        {
+            String response = Utilities.ask("Infection Probability = ?");
+            infectionProbabilityValue = Integer.valueOf(response);
+        }
+        PlagueSimulation.VIRULENCE = infectionProbabilityValue;
+    }
+}
+
+class SetInitialPopulationSizeCommand extends Command
+{
+    Integer initialPopulationSizeValue = null;
+
+    public SetInitialPopulationSizeCommand(Model model) { super(model); }
+
+    public void execute() throws Exception
+    {
+        if (initialPopulationSizeValue == null)
+        {
+            String response = Utilities.ask("Initial Population Size = ?");
+            initialPopulationSizeValue = Integer.valueOf(response);
+        }
+        PlagueSimulation.POPULATION_SIZE = initialPopulationSizeValue;
+    }
+}
+
+class SetRecoveryTimeCommand extends Command
+{
+    Integer recoveryTimeValue = null;
+
+    public SetRecoveryTimeCommand(Model model) { super(model); }
+
+    public void execute() throws Exception
+    {
+        if (recoveryTimeValue == null)
+        {
+            String response = Utilities.ask("Fatality/Recovery Time = ?");
+            recoveryTimeValue = Integer.valueOf(response);
+        }
+        PlagueSimulation.RECOVERY_TIME = recoveryTimeValue;
+    }
+}
+
+//================================================================
+
+class PlaguePanel extends WorldPanel implements ChangeListener
+{
+    private JPanel slidersPanel = new JPanel();
 
     private JSlider initialInfectionPercentageSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, PlagueSimulation.INITIAL_INFECTION_PERCENTAGE);
     private JSlider infectionProbabilitySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, PlagueSimulation.VIRULENCE);
@@ -133,91 +204,35 @@ class PlaguePanel extends WorldPanel
     {
         super(factory);
 
-        this.controlPanel.setLayout(new GridLayout(10, 1));
-
-        // initialInfectionPercentageLabel
-        initialInfectionPercentageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        initialInfectionPercentageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.slidersPanel.setLayout(new GridLayout(5, 1));
 
         // initialInfectionPercentageSlider
-        JPanel initialInfectionPercentagePanel = new JPanel(new BorderLayout());
-        initialInfectionPercentagePanel.setOpaque(false);
-        initialInfectionPercentageSlider.setMajorTickSpacing(10);
+        initialInfectionPercentageSlider.setMajorTickSpacing(20);
         initialInfectionPercentageSlider.setPaintTicks(true);
         initialInfectionPercentageSlider.setPaintLabels(true);
-        initialInfectionPercentageSlider.setMinorTickSpacing(5);
-        initialInfectionPercentageSlider.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                PlagueSimulation.INITIAL_INFECTION_PERCENTAGE = initialInfectionPercentageSlider.getValue();
-            }
-        });
-        initialInfectionPercentagePanel.add(initialInfectionPercentageSlider);
-
-        // infectionProbabilityLabel
-        infectionProbabilityLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        infectionProbabilityLabel.setVerticalAlignment(SwingConstants.CENTER);
+        initialInfectionPercentageSlider.setMinorTickSpacing(10);
+        initialInfectionPercentageSlider.addChangeListener(this);
 
         // infectionProbabilitySlider
-        JPanel infectionProbabilityPanel = new JPanel(new BorderLayout());
-        infectionProbabilityPanel.setOpaque(false);
-        infectionProbabilitySlider.setMajorTickSpacing(10);
+        infectionProbabilitySlider.setMajorTickSpacing(20);
         infectionProbabilitySlider.setPaintTicks(true);
         infectionProbabilitySlider.setPaintLabels(true);
-        infectionProbabilitySlider.setMinorTickSpacing(5);
-        infectionProbabilitySlider.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                PlagueSimulation.VIRULENCE = infectionProbabilitySlider.getValue();
-            }
-        });
-        infectionProbabilityPanel.add(infectionProbabilitySlider);
-
-        // initialPopulationSizeLabel
-        initialPopulationSizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        initialPopulationSizeLabel.setVerticalAlignment(SwingConstants.CENTER);
+        infectionProbabilitySlider.setMinorTickSpacing(10);
+        infectionProbabilitySlider.addChangeListener(this);
 
         // initialPopulationSizeSlider
-        JPanel initialPopulationSizePanel = new JPanel(new BorderLayout());
-        initialPopulationSizePanel.setOpaque(false);
-        initialPopulationSizeSlider.setMajorTickSpacing(20);
+        initialPopulationSizeSlider.setMajorTickSpacing(50);
         initialPopulationSizeSlider.setPaintTicks(true);
         initialPopulationSizeSlider.setPaintLabels(true);
-        initialPopulationSizeSlider.setMinorTickSpacing(5);
-        initialPopulationSizeSlider.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                PlagueSimulation.POPULATION_SIZE = initialPopulationSizeSlider.getValue();
-            }
-        });
-        initialPopulationSizePanel.add(initialPopulationSizeSlider);
-
-        // recoveryTimeLabel
-        recoveryTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        recoveryTimeLabel.setVerticalAlignment(SwingConstants.CENTER);
+        initialPopulationSizeSlider.setMinorTickSpacing(25);
+        initialPopulationSizeSlider.addChangeListener(this);
 
         // recoveryTimeSlider
-        JPanel recoveryTimePanel = new JPanel(new BorderLayout());
-        recoveryTimePanel.setOpaque(false);
-        recoveryTimeSlider.setMajorTickSpacing(50);
+        recoveryTimeSlider.setMajorTickSpacing(100);
         recoveryTimeSlider.setPaintTicks(true);
         recoveryTimeSlider.setPaintLabels(true);
-        recoveryTimeSlider.setMinorTickSpacing(10);
-        recoveryTimeSlider.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                PlagueSimulation.RECOVERY_TIME = recoveryTimeSlider.getValue();
-            }
-        });
-        recoveryTimePanel.add(recoveryTimeSlider);
+        recoveryTimeSlider.setMinorTickSpacing(25);
+        recoveryTimeSlider.addChangeListener(this);
 
         // fatalityButton
         JPanel fatalityPanel = new JPanel();
@@ -227,23 +242,77 @@ class PlaguePanel extends WorldPanel
 
 
         // adds initialInfectionPercentage stuff
-        this.controlPanel.add(initialInfectionPercentageLabel);
-        this.controlPanel.add(initialInfectionPercentagePanel);
+        JPanel pp = new JPanel();
+        pp.setLayout(new BorderLayout());
+        pp.setOpaque(false);
+
+        JPanel ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(new JLabel("Initial % Infected:"));
+        pp.add(ppp, BorderLayout.NORTH);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(initialInfectionPercentageSlider);
+        pp.add(ppp, BorderLayout.CENTER);
+
+        this.slidersPanel.add(pp);
 
         // adds infectionProbability stuff
-        this.controlPanel.add(infectionProbabilityLabel);
-        this.controlPanel.add(infectionProbabilityPanel);
+        pp = new JPanel();
+        pp.setLayout(new BorderLayout());
+        pp.setOpaque(false);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(new JLabel("Infection Probability:"));
+        pp.add(ppp, BorderLayout.NORTH);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(infectionProbabilitySlider);
+        pp.add(ppp, BorderLayout.CENTER);
+
+        this.slidersPanel.add(pp);
 
         // adds initialPopulationSize stuff
-        this.controlPanel.add(initialPopulationSizeLabel);
-        this.controlPanel.add(initialPopulationSizePanel);
+        pp = new JPanel();
+        pp.setLayout(new BorderLayout());
+        pp.setOpaque(false);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(new JLabel("Initial Population Size:"));
+        pp.add(ppp, BorderLayout.NORTH);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(initialPopulationSizeSlider);
+        pp.add(ppp, BorderLayout.CENTER);
+
+        this.slidersPanel.add(pp);
 
         // adds recoveryTime stuff
-        this.controlPanel.add(recoveryTimeLabel);
-        this.controlPanel.add(recoveryTimePanel);
+        pp = new JPanel();
+        pp.setLayout(new BorderLayout());
+        pp.setOpaque(false);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(new JLabel("Fatality/Recovery Time:"));
+        pp.add(ppp, BorderLayout.NORTH);
+
+        ppp = new JPanel();
+        ppp.setOpaque(false);
+        ppp.add(recoveryTimeSlider);
+        pp.add(ppp, BorderLayout.CENTER);
+
+        this.slidersPanel.add(pp);
 
         // adds not fatal button
-        this.controlPanel.add(fatalityPanel);
+        this.slidersPanel.add(fatalityPanel);
+
+        this.controlPanel.add(slidersPanel, BorderLayout.CENTER);
     }
 
     @Override
@@ -255,12 +324,32 @@ class PlaguePanel extends WorldPanel
     }
 
     @Override
+    public void stateChanged(ChangeEvent e)
+    {
+        if (e.getSource() == initialInfectionPercentageSlider)
+            PlagueSimulation.INITIAL_INFECTION_PERCENTAGE = initialInfectionPercentageSlider.getValue();
+        if (e.getSource() == infectionProbabilitySlider)
+            PlagueSimulation.VIRULENCE = infectionProbabilitySlider.getValue();
+        if (e.getSource() == initialPopulationSizeSlider)
+            PlagueSimulation.POPULATION_SIZE = initialPopulationSizeSlider.getValue();
+        if (e.getSource() == recoveryTimeSlider)
+            PlagueSimulation.RECOVERY_TIME = recoveryTimeSlider.getValue();
+        model.changed();
+    }
+
+    @Override
     public void update()
     {
+        initialInfectionPercentageSlider.setValue(((PlagueSimulation)model).INITIAL_INFECTION_PERCENTAGE);
+        infectionProbabilitySlider.setValue(((PlagueSimulation)model).VIRULENCE);
+        initialPopulationSizeSlider.setValue(((PlagueSimulation)model).POPULATION_SIZE);
+        recoveryTimeSlider.setValue(((PlagueSimulation)model).RECOVERY_TIME);
         if (((PlagueSimulation)this.model).isFatal()) fatalityButton.setText("Fatal");
         else fatalityButton.setText("Not Fatal");
     }
 }
+
+//================================================================
 
 class PlagueView extends WorldView
 {
@@ -287,6 +376,8 @@ class PlagueView extends WorldView
     }
 }
 
+//================================================================
+
 class PlagueFactory extends WorldFactory implements AppFactory
 {
     public PlagueFactory() { super(); }
@@ -298,25 +389,75 @@ class PlagueFactory extends WorldFactory implements AppFactory
     public View makeView(Model model) { return new PlagueView(model); }
 
     @Override
-    public Command makeEditCommand(Model model, String type, Object source)
+    public String[] getEditCommands()
     {
-        Command originalCommand = super.makeEditCommand(model, type, source);
-        if (originalCommand != null) return originalCommand;
-        if (type.equalsIgnoreCase("Fatal") || type.equalsIgnoreCase("Not Fatal"))
-            return new FatalCommand(model);
-        return null;
+        return new String[] {"Start", "Pause", "Resume", "Stop", "Stats",
+                "Initial % Infected", "Infection Probability",
+                "Initial Population Size", "Fatality/Recovery Time",
+                "Toggle Fatality"};
     }
 
     @Override
-    public String getTitle() { return "Plague"; }
+    public Command makeEditCommand(Model model, String type, Object source)
+    {
+        Command command = super.makeEditCommand(model, type, source);
+
+        if (command == null) // true if it is a plague-specific command
+        {
+            if (type.equalsIgnoreCase("Initial % Infected"))
+            {
+                command = new SetInitialInfectionPercentageCommand(model);
+                if (source instanceof JSlider)
+                {
+                    ((SetInitialInfectionPercentageCommand)command).initialInfectionPercentageValue = ((JSlider)source).getValue();
+                }
+            }
+            else if (type.equalsIgnoreCase("Infection Probability"))
+            {
+                command = new SetInfectionProbabilityCommand(model);
+                if (source instanceof JSlider)
+                {
+                    ((SetInfectionProbabilityCommand)command).infectionProbabilityValue = ((JSlider)source).getValue();
+                }
+            }
+            if (type.equalsIgnoreCase("Initial Population Size"))
+            {
+                command = new SetInitialPopulationSizeCommand(model);
+                if (source instanceof JSlider)
+                {
+                    ((SetInitialPopulationSizeCommand)command).initialPopulationSizeValue = ((JSlider)source).getValue();
+                }
+            }
+            if (type.equalsIgnoreCase("Fatality/Recovery Time"))
+            {
+                command = new SetRecoveryTimeCommand(model);
+                if (source instanceof JSlider)
+                {
+                    ((SetRecoveryTimeCommand)command).recoveryTimeValue = ((JSlider)source).getValue();
+                }
+            }
+            else if (type.equalsIgnoreCase("Fatal") || type.equalsIgnoreCase("Not Fatal")
+                    || type.equalsIgnoreCase("Toggle Fatality"))
+            {
+                return new FatalCommand(model);
+            }
+        }
+
+        return command;
+    }
+
+    @Override
+    public String getTitle() { return "Plague Simulation"; }
 }
+
+//================================================================
 
 public class PlagueSimulation extends World
 {
-    public static int VIRULENCE = 100; // % chance of infection
+    public static int VIRULENCE = 50; // % chance of infection
     public static int RESISTANCE = 2; // % chance of resisting infection
-    public static int RECOVERY_TIME = 70; // max 500
-    public static int POPULATION_SIZE = 100; // max 200
+    public static int RECOVERY_TIME = 200; // max 500
+    public static int POPULATION_SIZE = 150; // max 200
     public static int INITIAL_INFECTION_PERCENTAGE = 10; // max 100
     private int CURRENT_INFECTED_PERCENTAGE = INITIAL_INFECTION_PERCENTAGE;
     private boolean isFatal = false;
@@ -331,13 +472,9 @@ public class PlagueSimulation extends World
         for (Agent a : this.agents) // loops through all the agents
         {
             if (this.isFatal && ((Host)a).infected()) // true if an infected agent should be dead after recovery
-            {
                 ((Host)a).setShouldDie(true);
-            }
             else
-            {
                 ((Host)a).setShouldDie(false);
-            }
         }
     }
 
@@ -381,7 +518,7 @@ public class PlagueSimulation extends World
     public String getStatus()
     {
         return "Original Population = " + POPULATION_SIZE
-                + "\n# of Living Hosts = " + numAgents
+                + "\n# of Living Hosts = " + this.numAgents
                 + "\nClock: " + this.clock
                 + "\n% Infected: " + CURRENT_INFECTED_PERCENTAGE;
     }
