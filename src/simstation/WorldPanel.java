@@ -4,6 +4,7 @@ import mvc.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class WorldPanel extends AppPanel
 {
@@ -63,6 +64,7 @@ public class WorldPanel extends AppPanel
     public void setModel(Model m) {
         super.setModel(m);
         World w = (World)m;
+        w.rethread();
         //w.startAgents(); I want to start manually
     }
 
@@ -85,8 +87,6 @@ public class WorldPanel extends AppPanel
             } else if (cmmd.equals("Open")) {
                 Model newModel = Utilities.open(model);
                 if (newModel != null) {
-                    World world = (World) newModel;
-                    world.rethread();
                     setModel(newModel);
                     model.setUnsavedChanges(false);
                 }

@@ -35,7 +35,9 @@ public abstract class Agent implements Runnable, Serializable {
     }
 
     public void start() {
-        myThread.start();
+        if (myThread != null) { //was running into null pointer issue with "open" even though the code works
+            myThread.start();
+        }
     }
 
     public void stop() {
@@ -55,6 +57,7 @@ public abstract class Agent implements Runnable, Serializable {
     public abstract void update();
 
     public void run() {
+        onStart();
         while (!stopped) {
             synchronized (this) {
                 while (paused) { //I'm using synchronization here because I'm waiting for the paused condition to change
@@ -73,7 +76,12 @@ public abstract class Agent implements Runnable, Serializable {
 
             }
         }
+        onExit();
     }
+
+    public synchronized void onStart() {} //good practice from class
+
+    public synchronized void onExit() {} //good practice from class
 
     //getters
     public int getX() {
@@ -95,7 +103,7 @@ public abstract class Agent implements Runnable, Serializable {
         return myThread;
     }
     public void setMyThread(Thread t) {
-        myThread = t;
+        this.myThread = t;
     }
     public boolean getPaused() {
         return paused;

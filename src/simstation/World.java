@@ -154,7 +154,7 @@ public abstract class World extends Model {
                     tempYWithinBorders = true;
                 }
             }
-            if (tempXWithinBorders && tempYWithinBorders) {
+            if (tempXWithinBorders && tempYWithinBorders && (temp != caller) && (!temp.getStopped())) {
                 neighbor = temp;
                 return neighbor;
             }
