@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 class Host extends MobileAgent
@@ -15,12 +16,14 @@ class Host extends MobileAgent
     private Color color;
     private int timeBeforeCured;
     private boolean shouldDie;
+    private boolean isDead;
 
     public Host(World world, boolean infected)
     {
         super(world);
 
         this.shouldDie = false;
+        this.isDead = false;
 
         if (this.infected = infected) // true if the Host is infected
         {
@@ -60,6 +63,10 @@ class Host extends MobileAgent
 
     public void setShouldDie(boolean shouldDie) { this.shouldDie = shouldDie; }
 
+    public boolean isDead() { return isDead; }
+
+    public void setIsDead(boolean isDead) { this.isDead = isDead; }
+
     public void setTimeBeforeCured(int timeBeforeCured) { this.timeBeforeCured = timeBeforeCured; }
 
     @Override
@@ -68,7 +75,7 @@ class Host extends MobileAgent
         if (this.color != Color.BLACK)
         {
             heading = Heading.random();
-            int steps = Utilities.rng.nextInt(15) + 1;
+            int steps = Utilities.rng.nextInt(10) + 1;
             move(steps);
 
             if (this.infected) // true if this host is infected
@@ -92,8 +99,8 @@ class Host extends MobileAgent
                 }
                 else if (this.shouldDie) // true if the timer is up and fatality is on
                 {
-                    //this.world.getWorldAgents().remove(this);
                     this.color = Color.BLACK;
+                    this.isDead = true;
                 }
                 else
                 {
@@ -481,7 +488,8 @@ public class PlagueSimulation extends World
     @Override
     public void startAgents()
     {
-        this.agents.clear();
+        this.stopAgents();
+        this.agents = new ArrayList<Agent>();
         populate();
         for (Agent agent : agents) { agent.start(); }
         observer.start();
@@ -502,14 +510,14 @@ public class PlagueSimulation extends World
     @Override
     public void updateStatistics()
     {
-        super.updateStatistics();
-
+        this.numAgents = agents.size();
+        this.clock++;
         int numOfInfectedAgents = 0;
-        this.numAgents = 0;
+        this.alive = 0;
         for (Agent agent : agents) // loops through the agents
         {
             if (((Host)agent).infected()) { numOfInfectedAgents++; }
-            if (((Host)agent).getColor() != Color.BLACK) { numAgents++; }
+            if (!((Host)agent).isDead()) { this.alive++; }
         }
         CURRENT_INFECTED_PERCENTAGE = (numOfInfectedAgents * 100) / POPULATION_SIZE;
     }
@@ -518,7 +526,7 @@ public class PlagueSimulation extends World
     public String getStatus()
     {
         return "Original Population = " + POPULATION_SIZE
-                + "\n# of Living Hosts = " + this.numAgents
+                + "\n# of Living Hosts = " + this.alive
                 + "\nClock: " + this.clock
                 + "\n% Infected: " + CURRENT_INFECTED_PERCENTAGE;
     }
