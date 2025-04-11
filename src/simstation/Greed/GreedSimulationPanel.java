@@ -1,5 +1,7 @@
 package simstation.Greed;
 import simstation.*;
+import simstation.plague.PlagueSimulation;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -99,5 +101,13 @@ public class GreedSimulationPanel extends WorldPanel implements ChangeListener {
             handleException(f);
         }
 
+    }
+
+    public void update()
+    {
+        //update the value of the sliders based on the input from the edit menu
+        greed.setValue(Cow.greediness);
+        growBackRate.setValue(Patch.growBackRate);
+        moveEnergy.setValue(((Meadow)model).getMoveEnergy());
     }
 }

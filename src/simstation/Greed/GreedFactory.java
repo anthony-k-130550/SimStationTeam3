@@ -13,6 +13,21 @@ public class GreedFactory extends WorldFactory{
         return "Greed";
     }
 
+    public String[] getEditCommands() { return new String[] {"Start", "Pause", "Resume", "Stop", "Stats", "Greed", "Grow Back", "Move Energy"}; }
+
+    public Command makeEditCommand(Model model, String type, Object source)
+    {
+        if (type.equalsIgnoreCase("Start")) return new StartCommand(model);
+        if (type.equalsIgnoreCase("Pause")) return new SuspendCommand(model);
+        if (type.equalsIgnoreCase("Resume")) return new ResumeCommand(model);
+        if (type.equalsIgnoreCase("Stop")) return new StopCommand(model);
+        if (type.equalsIgnoreCase("Stats")) return new StatsCommand(model);
+        if (type.equalsIgnoreCase("Greed")) return new GreedCommand(model);
+        if (type.equalsIgnoreCase("Grow Back")) return new GrowBackCommand(model);
+        if (type.equalsIgnoreCase("Move Energy")) return new MoveEnergyCommand(model);
+        return null;
+    }
+
     public String[] getHelp()
     {
         return new String[] {"Start - starts the simulation",
