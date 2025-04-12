@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class MeadowView extends WorldView {
     Color darkGreen = new Color(0,50, 0);
-    Color halfFullGreen = new Color(50, 60,20);
+    Color halfFullGreen = new Color(50, 90,20);
     Color halfEmptyGreen = new Color(25,140,0);
     Color lightGreen = new Color(0,255,0);
     Color emptyGreen = new Color(15, 255, 100);
