@@ -1,4 +1,4 @@
-package simstation.prisonersdilemma;
+package simstation.prisonersDilemma;
 
 import mvc.Utilities;
 

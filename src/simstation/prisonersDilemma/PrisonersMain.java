@@ -1,4 +1,5 @@
-import simstation.prisonersdilemma.*;
+package simstation.prisonersDilemma;
+
 import simstation.*;
 import mvc.*;
 

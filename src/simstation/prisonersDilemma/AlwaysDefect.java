@@ -1,4 +1,4 @@
-package simstation.prisonersdilemma;
+package simstation.prisonersDilemma;
 
 public class AlwaysDefect implements Strategy {
     public boolean cooperate(boolean lastOpponentMove) { return false; }
