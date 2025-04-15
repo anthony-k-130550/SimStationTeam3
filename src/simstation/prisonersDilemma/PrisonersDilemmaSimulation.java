@@ -1,24 +1,35 @@
 package simstation.prisonersDilemma;
 
+import mvc.AppPanel;
 import simstation.*;
 import java.util.*;
 
 public class PrisonersDilemmaSimulation extends World {
 
+    private int averageStats = 0;
+
+    public PrisonersDilemmaSimulation() { super(); }
+
     public void populate() {
-        for (int i = 0; i < 25; i++) addAgent(new Prisoner(new AlwaysCooperate()));
-        for (int i = 0; i < 25; i++) addAgent(new Prisoner(new AlwaysDefect()));
-        for (int i = 0; i < 25; i++) addAgent(new Prisoner(new TitForTat()));
-        for (int i = 0; i < 25; i++) addAgent(new Prisoner(new RandomStrategy()));
+        for (int i = 0; i < 10; i++)
+        {
+            addAgent(new Cooperate());
+            addAgent(new Cheat());
+            addAgent(new Tit4Tat());
+            addAgent(new RandomlyCooperate());
+        }
     }
 
     public void updateStatistics() {
-        this.clock++;
-        this.numAgents = agents.size();
-        this.alive = agents.size();
+        super.updateStatistics();
+        this.averageStats = 0;
+        for (int i = 0; i < this.numAgents; i++)
+            this.averageStats += ((Prisoner)this.agents.get(i)).getFitness();
+        this.averageStats /= this.numAgents;
     }
 
     public String getStatus() {
+        /*
         Map<String, List<Integer>> stats = new HashMap<>();
         for (Agent a : agents) {
             Prisoner p = (Prisoner) a;
@@ -35,5 +46,19 @@ public class PrisonersDilemmaSimulation extends World {
         }
 
         return sb.toString();
+
+         */
+
+        this.observer.update();
+
+        return "Clock: " + this.clock
+                + ", Alive: " + this.alive
+                + ", Agents: " + this.numAgents
+                + ", Average Fitness: " + this.averageStats;
+    }
+
+    public static void main(String[] args) {
+        AppPanel panel = new WorldPanel(new PrisonersDilemmaFactory());
+        panel.display();
     }
 }
