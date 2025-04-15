@@ -3,15 +3,12 @@ package simstation.prisonersDilemma;
 import mvc.Utilities;
 import simstation.Agent;
 
-public class RandomlyCooperate extends Prisoner {
-
-    public boolean cooperate(boolean lastOpponentMove) {
-        return Utilities.rng.nextBoolean();
+public class RandomlyCooperate implements Strategy {
+    Prisoner myPrisoner;
+    public RandomlyCooperate(Prisoner prisoner) {
+        this.myPrisoner = prisoner;
     }
-
-    @Override
-    public void update() {
-        myMove = Utilities.rng.nextBoolean();
-        super.update();
+    public boolean cooperate() {
+        return Utilities.rng.nextBoolean();
     }
 }

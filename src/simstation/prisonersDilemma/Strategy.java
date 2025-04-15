@@ -1,6 +1,6 @@
 package simstation.prisonersDilemma;
 
 public interface Strategy {
-    boolean cooperate(boolean lastOpponentMove);
+    boolean cooperate();
     //String getName();
 }

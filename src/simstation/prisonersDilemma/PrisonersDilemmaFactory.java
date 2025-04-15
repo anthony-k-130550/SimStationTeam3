@@ -13,7 +13,7 @@ public class PrisonersDilemmaFactory extends WorldFactory {
     }
 
     public String about() {
-        return "Prisoner's Dilemma Tournament Simulation\nAuthors: Your Team\nApril 2025";
+        return "Prisoner's Dilemma Tournament Simulation, Vasudev Vinod, Anthony Kieu, Tyler Fabela, 2025";
     }
 
     public String[] getHelp() {

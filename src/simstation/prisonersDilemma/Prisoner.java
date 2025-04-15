@@ -4,48 +4,38 @@ import simstation.*;
 
 public class Prisoner extends MobileAgent {
     protected int fitness = 0;
-    protected boolean lastOpponentMove = false;
-    protected boolean myMove = false;
+    protected boolean cheated = false;
+    Strategy strategy;
 
-    public Prisoner() {
+    public Prisoner()
+    {
         super();
     }
 
     public void interact(Prisoner other) {
-        //boolean theirMove = other.strategy.cooperate(this.lastOpponentMove);
+        boolean myMove = this.cooperate();
+        boolean otherMove = other.cooperate();
 
-        /*
-        if (myMove && other.myMove) {
-            fitness += 3;
-            other.fitness += 3;
-        } else if (!myMove && !other.myMove) {
-            fitness += 1;
-            other.fitness += 1;
-        } else if (!myMove && other.myMove) {
-            fitness += 5;
-        } else {
-            other.fitness += 5;
+        if (myMove && otherMove) {
+            this.updateFitness(3);
+            other.updateFitness(3);
+        } else if (myMove && !otherMove) {
+            other.updateFitness(5);
+        } else if (!myMove && otherMove) {
+            this.updateFitness(5);
+        } else { //the only other case is both chose to cheat
+            this.updateFitness(1);
+            other.updateFitness(1);
         }
-         */
+        cheated = !otherMove; //if otherMove is false, that means the other cheated, which we then remember for this agent
+    }
 
-
-        if (myMove && other.myMove) {
-            fitness += 3;
-            //other.fitness += 3;
-        } else if (!myMove && !other.myMove) {
-            fitness += 1;
-            //other.fitness += 1;
-        } else if (!myMove && other.myMove) {
-            fitness += 5;
-        }
-
-        this.lastOpponentMove = other.myMove;
-        //other.lastOpponentMove = myMove;
+    public boolean cooperate() {
+        return strategy.cooperate();
     }
 
     @Override
     public void update() {
-
         Agent neighbor = world.getNeighbor(this, 20);
         if (neighbor instanceof Prisoner) {
             interact((Prisoner) neighbor);
@@ -58,9 +48,19 @@ public class Prisoner extends MobileAgent {
         return fitness;
     }
 
-    /*
-    public String getStrategyName() {
-        return strategy.getName();
+    public void updateFitness(int amt) {
+        fitness += amt;
     }
-     */
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    public boolean getCheated() {
+        return cheated;
+    }
 }

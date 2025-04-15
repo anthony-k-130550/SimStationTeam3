@@ -26,10 +26,10 @@ public class Cow extends MobileAgent {
         this.patch.eatMe(this, Cow.greediness); //eats regardless, so the wait penalty can apply
     }
 
-    public synchronized int getEnergy() {
+    public int getEnergy() {
         return energy;
     }
-    public synchronized void setEnergy(int energy) {
+    public void setEnergy(int energy) {
         this.energy = energy;
     }
     public void setPatch(Patch patch) {
